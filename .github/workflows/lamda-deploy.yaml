@@ -24,12 +24,13 @@ jobs:
 
     - name: Zip for Lambda
       run: |
-        mkdir lambda-package
-        cp target/single-microservice.jar lambda-package/
-        cp -r src/main/java/com/demo/app/handler lambda-package/
-        cd lambda-package
-        zip -r ../lambda_handler_project.zip .
-        cd ..
+          mkdir lambda-package
+          # ✅ Automatically find the shaded jar
+          cp target/*shaded.jar lambda-package/single-microservice.jar
+          cp -r src/main/java/com/demo/app/handler lambda-package/
+          cd lambda-package
+          zip -r ../lambda_handler_project.zip .
+          cd ..
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
