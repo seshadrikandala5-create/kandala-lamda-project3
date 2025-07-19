@@ -1,9 +1,9 @@
-name: Deploy Lambda from S3
+name: Build & Deploy Lambda with Artifact Upload
 
 on:
   push:
     branches:
-      - master  # or main
+      - master
 
 jobs:
   deploy:
@@ -22,10 +22,10 @@ jobs:
     - name: Build with Maven
       run: mvn clean package
 
-    - name: List contents of target directory (for debug)
+    - name: Show contents of target directory
       run: ls -l target/
 
-    - name: Zip Lambda Package
+    - name: Create Lambda ZIP
       run: |
         mkdir lambda-package
         cp target/lambda-project-1.0.0-shaded.jar lambda-package/single-microservice.jar
@@ -33,6 +33,13 @@ jobs:
         cd lambda-package
         zip -r ../lambda_handler_project.zip .
         cd ..
+
+    # ✅ Upload ZIP as GitHub artifact
+    - name: Upload Lambda ZIP as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: lambda-handler-zip
+        path: lambda_handler_project.zip
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
