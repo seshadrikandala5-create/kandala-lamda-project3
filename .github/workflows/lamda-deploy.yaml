@@ -1,9 +1,9 @@
-name: Deploy Lambda from aws S3
+name: Deploy Lambda from S3
 
 on:
   push:
     branches:
-      - master  # or main, depending on your branch name
+      - master  # or main
 
 jobs:
   deploy:
@@ -22,15 +22,17 @@ jobs:
     - name: Build with Maven
       run: mvn clean package
 
-    - name: Zip for Lambda
+    - name: List contents of target directory (for debug)
+      run: ls -l target/
+
+    - name: Zip Lambda Package
       run: |
-          mkdir lambda-package
-          # ✅ Automatically find the shaded jar
-          cp target/lambda-project-1.0.0-shaded.jar lambda-package/single-microservice.jar
-          cp -r src/main/java/com/demo/app/handler lambda-package/
-          cd lambda-package
-          zip -r ../lambda_handler_project.zip .
-          cd ..
+        mkdir lambda-package
+        cp target/lambda-project-1.0.0-shaded.jar lambda-package/single-microservice.jar
+        cp -r src/main/java/com/demo/app/handler lambda-package/
+        cd lambda-package
+        zip -r ../lambda_handler_project.zip .
+        cd ..
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -46,6 +48,6 @@ jobs:
     - name: Deploy to Lambda
       run: |
         aws lambda update-function-code \
-          --function-name KandalaLambdaDemo \
+          --function-name kandalaLambdaFunction \
           --s3-bucket kandala-lambda-artifacts \
           --s3-key lambda_handler_project.zip
