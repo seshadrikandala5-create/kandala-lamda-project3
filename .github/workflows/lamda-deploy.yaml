@@ -26,7 +26,7 @@ jobs:
       run: |
           mkdir lambda-package
           # ✅ Automatically find the shaded jar
-          cp target/*.jar lambda-package/single-microservice.jar
+          cp target/lambda-project-1.0.0-shaded.jar lambda-package/single-microservice.jar
           cp -r src/main/java/com/demo/app/handler lambda-package/
           cd lambda-package
           zip -r ../lambda_handler_project.zip .
